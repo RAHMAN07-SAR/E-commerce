@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fashiom — Fashion E‑Commerce Prototype</title>
+  <meta name="description" content="Fashiom — Modern fashion store prototype — responsive HTML/CSS/JS" />
+  <meta name="author" content="Redes Creation" />
+  <meta name="theme-color" content="#0b0f0b" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style> 
+    /* ---------------------------------------------
+       Reset & Base
+    --------------------------------------------- */
+    :root{
+      --bg:#0b0f0b;
+      --card:#0f1110;
+      --muted:#9aa1a0;
+      --accent:#a8ff3e; /* neon green accent like reference */
+      --accent-2:#00e5a8;
+      --white:#ffffff;
+      --glass: rgba(255,255,255,0.04);
+      --radius:14px;
+      --maxw:1200px;
+      --transition: 300ms cubic-bezier(.2,.9,.3,1);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;
+      background:linear-gradient(180deg,var(--bg),#07100b 60%);
+      color:var(--white);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    .container{width:94%;max-width:var(--maxw);margin:0 auto}
+
+    /* ---------------------------------------------
+       Header / Nav
+    --------------------------------------------- */
+    header{
+      position:sticky;top:0;z-index:60;background:linear-gradient(180deg, rgba(11,15,11,0.75), rgba(11,15,11,0.6));backdrop-filter: blur(6px);
+      border-bottom:1px solid rgba(255,255,255,0.03);
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:42px;height:42px;border-radius:8px;background:linear-gradient(135deg,#4cff8a,#a8ff3e);display:flex;align-items:center;justify-content:center;font-weight:800;color:#021202}
+    .brand h1{font-size:16px;margin:0}
+    nav ul{display:flex;gap:18px;align-items:center;margin:0;padding:0;list-style:none}
+    nav a.nav-link{padding:8px 12px;border-radius:8px;color:var(--muted);font-weight:600}
+    nav a.nav-link:hover{color:var(--white);background:rgba(255,255,255,0.02)}
+    .nav-actions{display:flex;gap:12px;align-items:center}
+    .btn{background:var(--accent);color:#041205;padding:10px 16px;border-radius:12px;font-weight:700;cursor:pointer;transition:var(--transition)}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--white)}
+    .search{background:var(--glass);padding:8px;border-radius:10px}
+    .hamburger{display:none;background:transparent;border:0;color:var(--white);font-size:22px;padding:8px}
+
+    /* ---------------------------------------------
+       Hero
+    --------------------------------------------- */
+    .hero{display:grid;grid-template-columns:1fr;gap:28px;align-items:center;padding:36px 0}
+    .hero-inner{display:flex;flex-direction:column;gap:22px}
+    .eyebrow{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,#112212,#0b1a0f);color:var(--accent);font-weight:700;font-size:13px}
+    .hero-title{font-size:34px;line-height:1.03;font-weight:800;letter-spacing:-1px}
+    .hero-sub{color:var(--muted);max-width:680px}
+    .hero-ctas{display:flex;gap:12px;align-items:center}
+
+    /* Hero image card stack */
+    .hero-media{position:relative;display:flex;align-items:center;justify-content:center}
+    .media-card{width:320px;height:420px;border-radius:18px;overflow:hidden;background:#111;border:1px solid rgba(255,255,255,0.04);box-shadow: 0 12px 40px rgba(0,0,0,0.6);transform-origin:center;}
+    .media-card img{width:100%;height:100%;object-fit:cover}
+    .media-badge{position:absolute;left:8px;top:8px;background:rgba(0,0,0,0.5);padding:8px;border-radius:10px;font-size:12px}
+
+    /* Animated floating labels */
+    .float-label{position:absolute;right:-16px;bottom:100px;background:var(--accent);color:#041205;padding:8px 12px;border-radius:999px;font-weight:700;transform:rotate(-8deg);box-shadow:0 8px 20px rgba(0,0,0,0.45)}
+
+    /* ---------------------------------------------
+       Feature grid
+    --------------------------------------------- */
+    .features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:28px 0}
+    .feature{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;min-height:100px;display:flex;flex-direction:column;gap:10px}
+    .feature h4{margin:0}
+    .feature p{margin:0;color:var(--muted);font-size:13px}
+
+    /* ---------------------------------------------
+       Collections grid
+    --------------------------------------------- */
+    .collections{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:26px 0}
+    .collection{border-radius:12px;overflow:hidden;background:var(--card);border:1px solid rgba(255,255,255,0.03);}
+    .collection .meta{padding:14px}
+    .price{font-weight:800;color:var(--accent)}
+
+    /* ---------------------------------------------
+       Large promo band
+    --------------------------------------------- */
+    .promo{display:flex;align-items:center;justify-content:space-between;padding:28px;border-radius:18px;background:linear-gradient(90deg, rgba(168,255,62,0.07), rgba(0,229,168,0.03));border:1px solid rgba(168,255,62,0.07);margin:20px 0}
+
+    /* ---------------------------------------------
+       Product spotlight list (rows)
+    --------------------------------------------- */
+    .spotlight{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:26px 0}
+    .product-card{display:flex;gap:18px;background:var(--card);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);align-items:center}
+    .product-thumb{width:160px;height:160px;flex-shrink:0;border-radius:10px;overflow:hidden}
+
+    /* ---------------------------------------------
+       Testimonials
+    --------------------------------------------- */
+    .testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:26px 0}
+    .testimonial{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:18px;border-radius:12px}
+
+    /* ---------------------------------------------
+       Pricing cards
+    --------------------------------------------- */
+    .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:26px 0}
+    .plan{background:var(--card);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .popular{box-shadow:0 20px 60px rgba(168,255,62,0.06);border:1px solid rgba(168,255,62,0.18)}
+
+    /* ---------------------------------------------
+       Blog cards
+    --------------------------------------------- */
+    .blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:26px 0}
+
+    /* ---------------------------------------------
+       FAQ
+    --------------------------------------------- */
+    .faq{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:18px;border-radius:12px}
+    .accordion{border-radius:8px;overflow:hidden}
+    .accordion-item{border-bottom:1px solid rgba(255,255,255,0.03)}
+    .accordion-btn{width:100%;text-align:left;padding:14px;background:transparent;border:0;color:var(--white);font-weight:700;display:flex;justify-content:space-between;align-items:center}
+    .accordion-panel{padding:12px 14px;color:var(--muted);display:none}
+
+    /* ---------------------------------------------
+       Contact & Footer
+    --------------------------------------------- */
+    .contact{display:grid;grid-template-columns:1fr 360px;gap:22px;margin:26px 0}
+    .form{background:var(--card);padding:18px;border-radius:12px}
+    label{display:block;font-size:13px;margin-bottom:6px}
+    input,textarea,select{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--white);resize:vertical}
+    .footer{padding:36px 0;margin-top:32px;border-top:1px solid rgba(255,255,255,0.03)}
+    .footer .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+
+    /* ---------------------------------------------
+       Small screens
+    --------------------------------------------- */
+    @media (max-width:980px){
+      .features{grid-template-columns:repeat(2,1fr)}
+      .collections{grid-template-columns:repeat(2,1fr)}
+      .spotlight{grid-template-columns:1fr}
+      .testimonials{grid-template-columns:1fr}
+      .pricing{grid-template-columns:1fr}
+      nav ul{display:none}
+      .hamburger{display:inline-flex}
+      #mobileMenu{display:none;}
+      body.menu-open #mobileMenu{display:block;}
+      body.menu-open{overflow:hidden;}
+    }
+    @media (max-width:640px){
+      .features{grid-template-columns:1fr}
+      .collections{grid-template-columns:1fr}
+      .hero-title{font-size:28px}
+      .nav{padding:12px 0}
+      .container{width:96%}
+    }
+
+    /* ---------------------------------------------
+       Animations
+    --------------------------------------------- */
+    @keyframes floaty{
+      0%{transform:translateY(0) rotate(-2deg)}
+      50%{transform:translateY(-16px) rotate(2deg)}
+      100%{transform:translateY(0) rotate(-2deg)}
+    }
+    .media-card{animation:floaty 6s ease-in-out infinite}
+    .fade-in{animation:fadeInUp 800ms var(--transition) both}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+    /* micro interactions */
+    .collection:hover{transform:translateY(-8px);transition:var(--transition)}
+    .feature:hover{transform:translateY(-6px);transition:var(--transition)}
+    .btn:hover{transform:translateY(-3px)}
+
+    /* skiplink */
+    .skip{position:absolute;left:-9999px}
+    .skip:focus{left:14px;top:12px;padding:8px 12px}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo" aria-hidden>FC</div>
+        <div>
+          <h1 style="font-size:14px;margin:0">Fashiom</h1>
+          <div style="font-size:12px;color:var(--muted)">Modern Apparel</div>
+        </div>
+      </div>
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><a class="nav-link" href="index.html">Home</a></li>
+          <li><a class="nav-link" href="collections.html">Collections</a></li>
+          <li><a class="nav-link" href="trending.html">Trending</a></li>
+          <li><a class="nav-link" href="pricing.html">Pricing</a></li>
+          <li><a class="nav-link" href="blog.html">Blog</a></li>
+          <li><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <button class="btn">Shop Now</button>
+        <button class="hamburger" aria-label="Open menu" id="hamburger">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <!-- HERO -->
+    <section class="hero" aria-label="Hero section">
+      <div class="hero-inner fade-in">
+        <span class="eyebrow">NEW ARRIVALS</span>
+        <h2 class="hero-title">Style that speaks — Fashion that inspires</h2>
+        <p class="hero-sub">We craft modern essentials with care — sustainable fabrics, precise tailoring, and styles that last. Shop our latest collection and define your wardrobe.</p>
+        <div class="hero-ctas">
+          <a class="btn" href="collections.html">Explore Collection</a>
+          <a class="btn secondary" href="#about">Learn More</a>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:10px;align-items:center">
+          <div class="media-card" aria-hidden>
+            <img src="https://th.bing.com/th/id/R.77756a7ce53264d24dd0aa33ddff37e7?rik=WGibrIbW7qUnkw&riu=http%3a%2f%2fimages.unsplash.com%2fphoto-1617137984095-74e4e5e3613f%3fcrop%3dentropy%26cs%3dtinysrgb%26fit%3dmax%26fm%3djpg%26ixid%3dMnwxMjA3fDB8MXxzZWFyY2h8Mnx8YmxhemVyfHwwfHx8fDE2MjE2Mjc1MDk%26ixlib%3drb-1.2.1%26q%3d80%26w%3d1080&ehk=fnGKGlyZP5P0G0pVBya3wnlfD7DB1NYW%2fJoDNpDr2u8%3d&risl=&pid=ImgRaw&r=0" alt="Model wearing blazer">
+          </div>
+          <div class="media-card" style="width:260px;height:340px" aria-hidden>
+            <img src="https://tse4.mm.bing.net/th/id/OIP.GVjVPKp8nYNi_gY4C5apeAHaLH?cb=ucfimgc2&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Model portrait">
+          </div>
+          <div class="float-label">Limited Edition</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features" aria-label="Key features">
+      <div class="feature" role="article">
+        <h4>Quality Fabric</h4>
+        <p>Premium, ethically-sourced materials that feel great and last longer.</p>
+      </div>
+      <div class="feature" role="article">
+        <h4>Sustainable</h4>
+        <p>Eco-friendly production and recycled packaging across our lines.</p>
+      </div>
+      <div class="feature" role="article">
+        <h4>Free Shipping</h4>
+        <p>Complimentary shipping on orders above $50 — delivered fast.</p>
+      </div>
+      <div class="feature" role="article">
+        <h4>Easy Returns</h4>
+        <p>Hassle-free 30-day returns policy for peace of mind shopping.</p>
+      </div>
+    </section>
+
+    <!-- COLLECTIONS -->
+    <section id="collections" class="collections" aria-label="Collections">
+      <div class="collection fade-in">
+        <img src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3" alt="Men's jackets collection" />
+        <div class="meta">
+          <h3>Outerwear</h3>
+          <p class="price">From $69</p>
+        </div>
+      </div>
+      <div class="collection fade-in">
+        <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=4" alt="Women's dresses" />
+        <div class="meta">
+          <h3>Dresses</h3>
+          <p class="price">From $49</p>
+        </div>
+      </div>
+      <div class="collection fade-in">
+        <img src="https://i.pinimg.com/originals/5f/58/f0/5f58f03b886de83ae62c0116772aa50c.jpg" alt="Casual wear" />
+        <div class="meta">
+          <h3>Casual</h3>
+          <p class="price">From $29</p>
+        </div>
+      </div>
+
+      <!-- add more collection cards with different images to increase length -->
+      <div class="collection fade-in">
+        <img src="https://tse1.mm.bing.net/th/id/OIP.dIIn08vqRRAvYi2isTbtYwHaFg?cb=ucfimgc2&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Footwear" />
+        <div class="meta">
+          <h3>Footwear</h3>
+          <p class="price">From $39</p>
+        </div>
+      </div>
+      <div class="collection fade-in">
+        <img src="https://images.unsplash.com/photo-1514996937319-344454492b37?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=7" alt="Accessories" />
+        <div class="meta">
+          <h3>Accessories</h3>
+          <p class="price">From $9</p>
+        </div>
+      </div>
+      <div class="collection fade-in">
+        <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=8" alt="Streetwear" />
+        <div class="meta">
+          <h3>Streetwear</h3>
+          <p class="price">From $24</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROMO BAND -->
+    <section class="promo" aria-label="Promo">
+      <div>
+        <h3 style="margin:0">Sustainable Materials. Iconic Styles.</h3>
+        <p style="margin:4px 0 0;color:var(--muted)">Sign up and get 15% off your first order. Free returns & carbon-neutral shipping.</p>
+      </div>
+      <div>
+        <a class="btn" href="contact.html">Get 15% Off</a>
+      </div>
+    </section>
+
+    <!-- SPOTLIGHT PRODUCTS -->
+    <section id="trending" class="spotlight" aria-label="Trending products">
+      <div class="product-card">
+        <div class="product-thumb"><img src="https://st.mngbcn.com/rcs/pics/static/T2/fotos/S20/27063259_08_D1.jpg?ts=1656501333464&imwidth=337&imdensity=2" alt="Wool coat"/></div>
+        <div>
+          <h4>Wool Coat — Classic Fit</h4>
+          <p class="hero-sub">Textured wool blend with tailored silhouette.</p>
+          <p style="margin-top:8px" class="price">$129</p>
+          <div style="margin-top:10px"><a class="btn" href="#">Add to cart</a></div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-thumb"><img src="https://tse3.mm.bing.net/th/id/OIP.k_J91--Bs9mWTRhTU6WB5QHaE8?cb=ucfimgc2&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Casual shirt"/></div>
+        <div>
+          <h4>Clean Shirt — Everyday</h4>
+          <p class="hero-sub">Breathable cotton with subtle stretch.</p>
+          <p style="margin-top:8px" class="price">$59</p>
+          <div style="margin-top:10px"><a class="btn" href="#">Add to cart</a></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials" aria-label="Testimonials">
+      <div class="testimonial">
+        <p>"Fantastic fit and quality — the pieces I bought still look brand new after months."</p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:12px">
+          <img src="https://randomuser.me/api/portraits/women/65.jpg" width="48" height="48" style="border-radius:999px" alt="Customer photo">
+          <div>
+            <strong>Radhika S.</strong>
+            <div style="font-size:13px;color:var(--muted)">Verified buyer</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <p>"Love the sustainability focus — packaging, materials and the customer service have been excellent."</p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:12px">
+          <img src="https://randomuser.me/api/portraits/men/43.jpg" width="48" height="48" style="border-radius:999px" alt="Customer photo">
+          <div>
+            <strong>Arjun P.</strong>
+            <div style="font-size:13px;color:var(--muted)">Verified buyer</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial">
+        <p>"Quick delivery and the return process was seamless when I exchanged a size. Highly recommended."</p>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:12px">
+          <img src="https://randomuser.me/api/portraits/women/44.jpg" width="48" height="48" style="border-radius:999px" alt="Customer photo">
+          <div>
+            <strong>Meera K.</strong>
+            <div style="font-size:13px;color:var(--muted)">Verified buyer</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="pricing" aria-label="Pricing plans">
+      <div class="plan">
+        <h4>Basic</h4>
+        <p class="hero-sub">Perfect for first-time shoppers.</p>
+        <div style="font-size:28px;font-weight:800;margin:12px 0">$29</div>
+        <ul style="color:var(--muted);padding-left:18px">
+          <li>Access to sales</li>
+          <li>Standard shipping</li>
+        </ul>
+        <div style="margin-top:12px"><a class="btn secondary" href="#">Choose</a></div>
+      </div>
+      <div class="plan popular">
+        <h4>Popular</h4>
+        <p class="hero-sub">Best value for most customers.</p>
+        <div style="font-size:28px;font-weight:800;margin:12px 0">$59</div>
+        <ul style="color:var(--muted);padding-left:18px">
+          <li>Free shipping</li>
+          <li>Priority support</li>
+          <li>10% off new arrivals</li>
+        </ul>
+        <div style="margin-top:12px"><a class="btn" href="#">Get Popular</a></div>
+      </div>
+      <div class="plan">
+        <h4>Premium</h4>
+        <p class="hero-sub">For repeat customers & gifting.</p>
+        <div style="font-size:28px;font-weight:800;margin:12px 0">$129</div>
+        <ul style="color:var(--muted);padding-left:18px">
+          <li>Exclusive drops</li>
+          <li>Free returns</li>
+          <li>VIP support</li>
+        </ul>
+        <div style="margin-top:12px"><a class="btn secondary" href="#">Start Premium</a></div>
+      </div>
+    </section>
+
+    <!-- BLOG -->
+    <section id="blog" class="blog-grid" aria-label="Latest articles">
+      <article class="collection">
+        <img src="https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=11" alt="How to style blazers">
+        <div class="meta">
+          <h3>How to Style Blazers</h3>
+          <p class="hero-sub">Simple looks to elevate your wardrobe this season.</p>
+        </div>
+      </article>
+      <article class="collection">
+        <img src="https://images.unsplash.com/photo-1473186578172-c141e6798cf4?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=12" alt="Sustainable fabrics guide">
+        <div class="meta">
+          <h3>Sustainable Fabrics Guide</h3>
+          <p class="hero-sub">What to look for when choosing sustainable clothing.</p>
+        </div>
+      </article>
+      <article class="collection">
+        <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=13" alt="Wardrobe essentials">
+        <div class="meta">
+          <h3>Wardrobe Essentials</h3>
+          <p class="hero-sub">Timeless pieces every closet should own.</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq" aria-label="FAQ">
+      <h3>Frequently Asked Questions</h3>
+      <div class="accordion" id="faq">
+        <div class="accordion-item">
+          <button class="accordion-btn" aria-expanded="false">What is your return policy?<span>+</span></button>
+          <div class="accordion-panel">We accept returns within 30 days for unworn items. Return label provided at no cost for eligible orders.</div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn" aria-expanded="false">Do you ship internationally?<span>+</span></button>
+          <div class="accordion-panel">Yes — we ship to most countries. Duties and taxes may apply depending on your location.</div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-btn" aria-expanded="false">How can I track my order?<span>+</span></button>
+          <div class="accordion-panel">Once your order ships, you'll receive an email with tracking details. You may also check orders in your account page.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="contact" aria-label="Contact">
+      <div class="form">
+        <h3>Contact Us</h3>
+        <form id="contactForm">
+          <label for="name">Name</label>
+          <input id="name" name="name" required placeholder="Your name">
+
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required placeholder="you@example.com">
+
+          <label for="phone">Phone</label>
+          <input id="phone" name="phone" placeholder="+91 96766 59153">
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4" placeholder="How can we help?"></textarea>
+
+          <div style="margin-top:12px"><button class="btn" type="submit">Send Message</button></div>
+        </form>
+      </div>
+      <div>
+        <div style="background:var(--card);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)">
+          <h4>Visit Us</h4>
+          <p style="color:var(--muted)">Redes Creation — [Location]</p>
+          <p style="margin:6px 0"><strong>Phone:</strong> +91 96766 59153</p>
+          <p style="margin:6px 0"><strong>Email:</strong> info@redescreation.in</p>
+          <p style="margin:6px 0"><strong>Website:</strong> www.redescreation.in</p>
+          <div style="height:220px;background:#06100b;border-radius:8px;margin-top:12px;display:flex;align-items:center;justify-content:center;color:var(--muted)">Map placeholder</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section style="margin:28px 0;padding:20px;border-radius:12px;background:linear-gradient(90deg, rgba(168,255,62,0.04), rgba(0,229,168,0.02));border:1px solid rgba(168,255,62,0.03)">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <h3 style="margin:0">Subscribe to our newsletter</h3>
+          <p style="color:var(--muted);margin:6px 0 0">Early access to drops, exclusive codes, and styling tips.</p>
+        </div>
+        <form id="newsletter" style="display:flex;gap:8px;align-items:center">
+          <input placeholder="Email address" required style="padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--white)">
+          <button class="btn" type="submit">Subscribe</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <div class="cols">
+          <div>
+            <h4>Fashiom</h4>
+            <p style="color:var(--muted)">Modern fashion — crafted responsibly.</p>
+          </div>
+          <div>
+            <h5>Shop</h5>
+            <ul style="list-style:none;padding:0;margin:0;color:var(--muted)">
+              <li><a href="#">Men</a></li>
+              <li><a href="#">Women</a></li>
+              <li><a href="#">Accessories</a></li>
+            </ul>
+          </div>
+          <div>
+            <h5>Company</h5>
+            <ul style="list-style:none;padding:0;margin:0;color:var(--muted)">
+              <li><a href="#">About</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Sustainability</a></li>
+            </ul>
+          </div>
+          <div>
+            <h5>Support</h5>
+            <ul style="list-style:none;padding:0;margin:0;color:var(--muted)">
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Returns</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:22px;flex-wrap:wrap">
+          <div style="color:var(--muted)">© 2025 Fashiom. All rights reserved.</div>
+          <div style="display:flex;gap:10px">
+            <a href="#" aria-label="Instagram"><i class="fa-brands fa-square-instagram"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Mobile menu overlay -->
+  <div id="mobileMenu" style="position:fixed;inset:0;background:rgba(2,4,2,0.8);backdrop-filter:blur(6px);display:none;z-index:80;padding:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;gap:12px;align-items:center"><div class="logo">FC</div><strong>Menu</strong></div>
+      <button id="closeMenu" class="hamburger" type="button">✕</button>
+    </div>
+    <nav style="margin-top:18px">
+      <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px">
+        <li><a style="font-size:18px;color:var(--white)" href="collections.html">Collections</a></li>
+        <li><a style="font-size:18px;color:var(--white)" href="trending.html">Trending</a></li>
+        <li><a style="font-size:18px;color:var(--white)" href="pricing.html">Pricing</a></li>
+        <li><a style="font-size:18px;color:var(--white)" href="blog.html">Blog</a></li>
+        <li><a style="font-size:18px;color:var(--white)" href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div style="margin-top:18px">
+      <form id="mobileSearch" style="display:flex;gap:8px">
+        <input placeholder="Search products" style="flex:1;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--white)">
+        <button class="btn" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    
+      // mobile menu
+      const hamburger = document.getElementById('hamburger');const mobileMenu = document.getElementById('mobileMenu');const closeMenu = document.getElementById('closeMenu');
+      hamburger?.addEventListener('click',()=>{mobileMenu.style.display='block';document.body.style.overflow='hidden'});
+      closeMenu?.addEventListener('click',()=>{mobileMenu.style.display='none';document.body.style.overflow='auto'});
+      document.addEventListener('keydown',e=>{if(e.key==='Escape'){mobileMenu.style.display='none';document.body.style.overflow='auto';closeQuickModal()}});
+
+    
+
+    // Accordion behavior
+    document.querySelectorAll('.accordion-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        const panel = btn.nextElementSibling;
+        if(!expanded){
+          panel.style.display='block';
+          btn.querySelector('span')?.textContent='−';
+        } else {
+          panel.style.display='none';
+          btn.querySelector('span')?.textContent='+';
+        }
+      })
+    })
+
+    // Simple fade-in on scroll
+    const faders = document.querySelectorAll('.fade-in');
+    const appearOptions = {threshold:0.15,rootMargin:'0px 0px -40px 0px'};
+    const appearOnScroll = new IntersectionObserver(function(entries,observer){
+      entries.forEach(entry=>{
+        if(!entry.isIntersecting) return;
+        entry.target.style.opacity=1;
+        entry.target.style.transform='none';
+        observer.unobserve(entry.target);
+      })
+    },appearOptions);
+    faders.forEach(f=>{f.style.opacity=0;f.style.transform='translateY(18px)';appearOnScroll.observe(f)});
+
+    // Contact form simple handler (no external network call)
+    document.getElementById('contactForm').addEventListener('submit',function(e){
+      e.preventDefault();
+      const name = this.name.value.trim();
+      const email = this.email.value.trim();
+      // basic validation
+      if(!name || !email){
+        alert('Please provide name and email.');
+        return;
+      }
+      // mimic submission
+      this.querySelector('button').textContent='Sending...';
+      setTimeout(()=>{this.querySelector('button').textContent='Send Message';alert('Thanks '+name+' — we will get back to you soon!')},900)
+    })
+
+    // newsletter submit
+    document.getElementById('newsletter').addEventListener('submit',function(e){
+      e.preventDefault();
+      alert('Subscribed — thanks!');
+    })
+    // small accessibility: close mobile menu on ESC
+    document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){document.body.classList.remove('menu-open')}})
+    document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){mobileMenu.style.display='none';document.body.style.overflow='auto'}})
+
+    // add more interactive micro-animations programmatically
+    (function pulsePopular(){
+      const popular = document.querySelector('.popular');
+      if(!popular) return;
+      let growing=true;let scale=1;
+      setInterval(()=>{
+        scale += (growing?0.006:-0.006);
+        popular.style.transform = `scale(${scale})`;
+        if(scale>1.02) growing=false;
+        if(scale<1) growing=true;
+      },60)
+    })();
+
+    // make collections keyboard navigable
+    document.querySelectorAll('.collection').forEach((c,i)=>{c.setAttribute('tabindex','0');c.addEventListener('keydown',e=>{if(e.key==='Enter'){c.querySelector('a')?.click()}})})
+
+    // add simple item reveal for testimonials
+    document.querySelectorAll('.testimonial').forEach((t,i)=>{t.style.animationDelay=(i*120)+'ms'})
+  </script>
+</body>
+</html>
